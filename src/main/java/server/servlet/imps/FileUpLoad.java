@@ -1,7 +1,6 @@
 package server.servlet.imps;
 
 import com.winone.ftc.mtools.FileUtil;
-import com.winone.ftc.mtools.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -16,10 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import static server.servlet.iface.Mservlet.RESULT_CODE.EXCEPTION;
+import static server.servlet.iface.Mservlet.RESULT_CODE.UNKNOWN;
 
 /**
  * Created by lzp on 2017/5/13.
@@ -29,34 +29,14 @@ public class FileUpLoad extends Mservlet {
 
     private final int _200M = 1024 * 1024 * 1024 * 200;
 
-    protected ArrayList<String> filterData(String data){
-        ArrayList<String> dataList = new ArrayList<>();
-        try {
-            final String  SPLIT =";";
-            if (!StringUtil.isEntry(data)){
-                data = URLDecoder.decode(data,"UTF-8");
-                if (data.contains(SPLIT)){
-                    String [] pathArray = data.split(SPLIT);
-                    for (String path :pathArray){
-                        dataList.add(path);
-                    }
-                }else{
-                    dataList.add(data);
-                }
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
-        return dataList;
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req,resp);
 
         List<Result> resultList = null;
-        Result result = new Result<UploadResult>().Info(199,"unknown error.");
+        Result result = new Result<UploadResult>().Info(UNKNOWN);
         //根据判断是否指定保存路径
         ArrayList<String> pathList = filterData(req.getHeader("specify-path"));
         if (pathList.size()>0){
@@ -91,7 +71,7 @@ public class FileUpLoad extends Mservlet {
             subHook(req,resultList);
         } catch (Exception e) {
             e.printStackTrace();
-            result.Info(400,e.toString());
+            result.Info(EXCEPTION);
         }finally {
           //向客户端返回结果
           Object object = resultList == null ? result : resultList;

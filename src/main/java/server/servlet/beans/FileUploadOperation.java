@@ -16,6 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import static server.servlet.iface.Mservlet.RESULT_CODE.EXCEPTION;
+import static server.servlet.iface.Mservlet.RESULT_CODE.SUCCESS;
+
 /**
  * Created by user on 2017/12/14.
  */
@@ -116,11 +119,11 @@ public class FileUploadOperation {
             uploadResult.currentFileName = specifyFileName;
             uploadResult.suffix = suffix;
             uploadResult.md5FileRelativePath = md5FileRelativePath;
-            uploadResult.Info(200,"success");
+            uploadResult.Info(SUCCESS);
 
         } catch (Exception e) {
             e.printStackTrace();
-            uploadResult.Info(601,e.toString());
+            uploadResult.Info(EXCEPTION);
         }
     }
 

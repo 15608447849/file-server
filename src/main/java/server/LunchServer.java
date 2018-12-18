@@ -24,6 +24,7 @@ import server.entity.FtpInfo;
 import server.entity.WebProperties;
 import server.servlet.imps.FileUpLoad;
 import server.servlet.imps.FileUpLoadAlsoBackup;
+import server.servlet.imps.GenerateZip;
 import server.servlet.imps.Online;
 
 import java.io.File;
@@ -62,6 +63,8 @@ public class LunchServer {
             servletBuilder.addServlet(io.undertow.servlet.Servlets.servlet("FileUpLoadAlsoBackup", FileUpLoadAlsoBackup.class).addMapping("/backup"));
             //服务器在线监测
             servletBuilder.addServlet(io.undertow.servlet.Servlets.servlet("Online", Online.class).addMapping("/online"));
+            //指定文件列表生成zip
+            servletBuilder.addServlet(io.undertow.servlet.Servlets.servlet("GenerateZip", GenerateZip.class).addMapping("/zip"));
 
             DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
 

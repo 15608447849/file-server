@@ -12,6 +12,8 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import static server.servlet.iface.Mservlet.RESULT_CODE.*;
+
 /**
  * Created by user on 2017/12/14.
  */
@@ -35,13 +37,13 @@ public class FileBackupOperation {
 
     private void translate(InetSocketAddress add, Result result) {
         if (!NetworkUtil.ping(add.getAddress().getHostAddress())){
-            result.Info(405,"fail by ping "+ add.getAddress().getHostAddress() +".");
+            result.Info(NETWORK_ANOMALY, add.getAddress().getHostAddress() +"网络不可达");
             return;
         }
         FtcBackupClient client =  BackupProperties.get().ftcBackupServer.getClient();
 
         if (fileItems==null || fileItems.size()==0){
-            result.Info(407,"not found backup file item.");
+            result.Info(PARAM_ERROR);
             return;
         }
 
@@ -61,9 +63,9 @@ public class FileBackupOperation {
         }
         if (stringBuilder.length() > 0){
             stringBuilder.deleteCharAt(stringBuilder.length()-1);
-            result.Info(408,"local not found file list by ["+stringBuilder.toString()+"]");
+            result.Info(FILE_NOT_FOUNT,"服务器不存在文件列表:["+stringBuilder.toString()+"]");
         }else{
-            result.Info(200,"success by "+ add.getAddress().getHostAddress() +":"+add.getPort()+ " backup file.");
+            result.Info(SUCCESS);
         }
 
     }
