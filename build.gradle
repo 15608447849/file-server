@@ -28,6 +28,7 @@ dependencies {
     implementation 'io.undertow:undertow-servlet:2.0.1.Final'
     implementation 'io.undertow:undertow-websockets-jsr:2.0.1.Final'
     implementation 'org.apache.ftpserver:ftpserver:1.1.1'
+    implementation 'org.apache.ant:ant:1.8.2'
 }
 
 compileKotlin {
