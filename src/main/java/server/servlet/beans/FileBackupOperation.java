@@ -37,13 +37,13 @@ public class FileBackupOperation {
 
     private void translate(InetSocketAddress add, Result result) {
         if (!NetworkUtil.ping(add.getAddress().getHostAddress())){
-            result.Info(NETWORK_ANOMALY, add.getAddress().getHostAddress() +"网络不可达");
+            result.info(NETWORK_ANOMALY, add.getAddress().getHostAddress() +"网络不可达");
             return;
         }
         FtcBackupClient client =  BackupProperties.get().ftcBackupServer.getClient();
 
         if (fileItems==null || fileItems.size()==0){
-            result.Info(PARAM_ERROR);
+            result.info(PARAM_ERROR);
             return;
         }
 
@@ -63,9 +63,9 @@ public class FileBackupOperation {
         }
         if (stringBuilder.length() > 0){
             stringBuilder.deleteCharAt(stringBuilder.length()-1);
-            result.Info(FILE_NOT_FOUNT,"服务器不存在文件列表:["+stringBuilder.toString()+"]");
+            result.info(FILE_NOT_FOUNT,"服务器不存在文件列表:["+stringBuilder.toString()+"]");
         }else{
-            result.Info(SUCCESS);
+            result.info(SUCCESS);
         }
 
     }

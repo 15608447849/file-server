@@ -73,7 +73,7 @@ public class FileUploadOperation {
         final String dirPath = WebProperties.get().rootPath; //本地绝对目录
         //创建目录
         if (!FileUtil.checkDir(dirPath+specifyPath)){
-            uploadResult.Info(600,"directory does not exist or created fail.");
+            uploadResult.info(600,"directory does not exist or created fail.");
             return;
         }
         //获取后缀
@@ -119,11 +119,11 @@ public class FileUploadOperation {
             uploadResult.currentFileName = specifyFileName;
             uploadResult.suffix = suffix;
             uploadResult.md5FileRelativePath = md5FileRelativePath;
-            uploadResult.Info(SUCCESS);
+            uploadResult.info(SUCCESS);
 
         } catch (Exception e) {
             e.printStackTrace();
-            uploadResult.Info(EXCEPTION);
+            uploadResult.info(EXCEPTION);
         }
     }
 

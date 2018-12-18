@@ -24,14 +24,12 @@ public class Result<T extends Result> {
 
     public String message;
 
-    public Result Info(int code, String message){
+    public Result info(int code, String message){
         this.code = code;
         this.message = message;
         return this;
     }
-    public Result Info(int code){
-        this.code = code;
-        this.message = errorMap.get(code);
-        return this;
+    public Result info(int code){
+        return info(code,errorMap.get(code));
     }
 }

@@ -36,7 +36,7 @@ public class FileUpLoad extends Mservlet {
         super.doPost(req,resp);
 
         List<Result> resultList = null;
-        Result result = new Result<UploadResult>().Info(UNKNOWN);
+        Result result = new Result<UploadResult>().info(UNKNOWN);
         //根据判断是否指定保存路径
         ArrayList<String> pathList = filterData(req.getHeader("specify-path"));
         if (pathList.size()>0){
@@ -71,7 +71,7 @@ public class FileUpLoad extends Mservlet {
             subHook(req,resultList);
         } catch (Exception e) {
             e.printStackTrace();
-            result.Info(EXCEPTION);
+            result.info(EXCEPTION);
         }finally {
           //向客户端返回结果
           Object object = resultList == null ? result : resultList;
