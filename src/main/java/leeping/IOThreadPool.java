@@ -12,7 +12,6 @@ public class IOThreadPool implements Closeable {
     private ThreadPoolExecutor executor;
     public IOThreadPool() {
         executor = createIoExecutor();
-        createIoExecutor();
     }
     //核心线程数,最大线程数,非核心线程空闲时间,存活时间单位,线程池中的任务队列
     private ThreadPoolExecutor createIoExecutor() {
