@@ -8,8 +8,7 @@ module reg{
     struct FSAddressInfo
     {
         bool isValid;
-        string uploadHttpUrl;
-        string downloadHttpUrlPrefix;
+        string httpUrlPrev;
     };
 
     struct FSAddressConfig

@@ -1,6 +1,6 @@
 package server.entity;
 
-import com.m.backup.server.FtcBackupServer;
+import bottle.backup.server.FtcBackupServer;
 import properties.abs.ApplicationPropertiesBase;
 import properties.annotations.PropertiesFilePath;
 import properties.annotations.PropertiesName;
@@ -28,6 +28,8 @@ public class BackupProperties extends ApplicationPropertiesBase {
     public boolean isBoot;
     @PropertiesName("ftc.backup.server.upload.auto")
     public boolean isAuto;
+    @PropertiesName("ftc.backup.server.time")
+    public String time;
 
     public InetSocketAddress[] remoteList;
 

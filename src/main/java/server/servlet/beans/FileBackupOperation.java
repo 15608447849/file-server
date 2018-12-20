@@ -1,7 +1,8 @@
 package server.servlet.beans;
 
-import com.m.backup.client.FtcBackupClient;
-import com.winone.ftc.mtools.NetworkUtil;
+
+import bottle.backup.client.FtcBackupClient;
+import bottle.ftc.tools.NetworkUtil;
 import server.entity.BackupProperties;
 import server.entity.Result;
 import server.entity.WebProperties;
@@ -31,7 +32,6 @@ public class FileBackupOperation {
             translate(remoteAddress,result);
             resultList.add(result);
         }
-
         return resultList;
     }
 

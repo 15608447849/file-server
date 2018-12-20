@@ -14,7 +14,7 @@ import java.util.Properties;
  * 自动读取属性文件
  * 子类继承,属性使用注解 PropertiesName
  */
-@PropertiesFilePath("/web.properties")
+@PropertiesFilePath("/application.properties")
 public abstract class ApplicationPropertiesBase {
 
     private static final HashMap<String, FieldConvert> baseType = new HashMap<>();

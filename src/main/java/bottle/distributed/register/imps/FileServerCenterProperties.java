@@ -19,9 +19,6 @@ public class FileServerCenterProperties extends ApplicationPropertiesBase {
         serverList.sort(Comparator.comparingInt(o -> o.priority));
     }
 
-    @PropertiesName("file.server.address.http.prev")
-    String pathPrev;
-
     @PropertiesName("file.server.address.list")
     private String listStr;
 

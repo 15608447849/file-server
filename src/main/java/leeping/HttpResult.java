@@ -1,6 +1,4 @@
-package bottle.distributed.register.imps;
-
-import leeping.HttpUtil;
+package leeping;
 
 import java.io.File;
 import java.util.Iterator;
@@ -21,11 +19,11 @@ public class HttpResult implements HttpUtil.Callback  {
         sb.deleteCharAt(sb.length()-1);
     }
 
-    HttpResult accessUrl(String url){
+    public HttpResult accessUrl(String url){
         new HttpUtil.Request(url,this).setReadTimeout(1000).setConnectTimeout(1000).text().execute();
         return this;
     }
-    String getRespondContent(){
+    public String getRespondContent(){
         return text;
     }
 

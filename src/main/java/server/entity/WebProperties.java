@@ -1,6 +1,6 @@
 package server.entity;
 
-import com.winone.ftc.mtools.FileUtil;
+import bottle.ftc.tools.FileUtil;
 import properties.abs.ApplicationPropertiesBase;
 import properties.annotations.PropertiesFilePath;
 import properties.annotations.PropertiesName;
@@ -18,8 +18,6 @@ public class WebProperties extends ApplicationPropertiesBase {
         return Holder.INSTANCE;
     }
 
-    @PropertiesName("web.path.prefix")
-    public String pathPrefix;
     @PropertiesName("web.ip")
     public String webIp;
     @PropertiesName("web.port")

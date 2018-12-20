@@ -1,9 +1,9 @@
 package server.servlet.beans;
 
-import com.winone.ftc.mtools.FileUtil;
-import com.winone.ftc.mtools.Log;
-import com.winone.ftc.mtools.MD5Util;
-import com.winone.ftc.mtools.StringUtil;
+import bottle.ftc.tools.FileUtil;
+import bottle.ftc.tools.Log;
+import bottle.ftc.tools.MD5Util;
+import bottle.ftc.tools.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import server.entity.FtpInfo;
 import server.entity.Result;
@@ -43,7 +43,7 @@ public class FileUploadOperation {
         while (iterator.hasNext()){
             if (iterator.next().isFormField()) iterator.remove();
         }
-        if (fileItems==null || fileItems.size()==0) throw new NullPointerException("the file item list is null.");
+        if (fileItems.size() == 0) throw new NullPointerException("the file item list is null.");
 
         FileItem fileItem;
         String areaName;//域名

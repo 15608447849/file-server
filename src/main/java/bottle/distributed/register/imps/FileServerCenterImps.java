@@ -4,9 +4,7 @@ import Ice.Current;
 import bottle.distributed.register.reg.FSAddressConfig;
 import bottle.distributed.register.reg.FSAddressInfo;
 import bottle.distributed.register.reg._IFileServerCenterDisp;
-
-import java.util.ArrayList;
-import java.util.List;
+import leeping.HttpResult;
 
 /**
  * ice 文件服务器 注册中心 实现
@@ -20,10 +18,10 @@ public class FileServerCenterImps extends _IFileServerCenterDisp {
     public FSAddressInfo queryFileServerAddress(Current __current) {
         for (FSAddressConfig config : properties.serverList){
             //http访问
-            String text = new HttpResult().accessUrl("http://"+config.address+properties.pathPrev+"/online").getRespondContent();
+            String prev = "http://"+config.address;
+            String text = new HttpResult().accessUrl(prev+"/online").getRespondContent();
             if (text!=null && text.equals("online")){
-                return new FSAddressInfo(true,"http://"+config.address+properties.pathPrev+"/upload",
-                        "http://"+config.address);
+                return new FSAddressInfo(true,prev);
             }
         }
         return null;

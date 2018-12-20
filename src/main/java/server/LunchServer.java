@@ -1,13 +1,17 @@
 package server;
 
-import com.m.backup.server.FtcBackupServer;
-import com.winone.ftc.mtools.Log;
-import com.winone.ftc.mtools.NetworkUtil;
+
+import bottle.backup.client.FtcBackupClient;
+import bottle.backup.server.Callback;
+import bottle.backup.server.FtcBackupServer;
+import bottle.ftc.tools.Log;
+import bottle.ftc.tools.NetworkUtil;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.PathResourceManager;
+import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
@@ -34,6 +38,8 @@ import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import static io.undertow.servlet.Servlets.servlet;
+
 
 /**
  * Created by lzp on 2017/5/13.
@@ -52,19 +58,18 @@ public class LunchServer {
 
     private static void startWebServer() {
         try {
-            //开启web服务器
+            //开启web文件服务器
             DeploymentInfo servletBuilder = io.undertow.servlet.Servlets.deployment()
                     .setClassLoader(LunchServer.class.getClassLoader())
-                    .setContextPath(WebProperties.get().pathPrefix)
-                    .setDeploymentName("file_server.war");
-            //添加文件上传
-            servletBuilder.addServlets(io.undertow.servlet.Servlets.servlet("FileUpLoad", FileUpLoad.class).addMapping("/upload"));
-            //文件上传并同步
-            servletBuilder.addServlet(io.undertow.servlet.Servlets.servlet("FileUpLoadAlsoBackup", FileUpLoadAlsoBackup.class).addMapping("/backup"));
-            //服务器在线监测
-            servletBuilder.addServlet(io.undertow.servlet.Servlets.servlet("Online", Online.class).addMapping("/online"));
-            //指定文件列表生成zip
-            servletBuilder.addServlet(io.undertow.servlet.Servlets.servlet("GenerateZip", GenerateZip.class).addMapping("/zip"));
+                    .setContextPath("/")
+                    .setDeploymentName("file_server.war")
+                    .setResourceManager(
+                            new PathResourceManager(Paths.get(WebProperties.get().rootPath), 16*4069L)
+                    );
+//            servletBuilder.addServlets(io.undertow.servlet.Servlets.servlet("文件上传", FileUpLoad.class).addMapping("/upload"));
+            servletBuilder.addServlet(servlet("文件上传并同步", FileUpLoadAlsoBackup.class).addMapping("/upload"));
+            servletBuilder.addServlet(servlet("服务器在线监测", Online.class).addMapping("/online"));
+            servletBuilder.addServlet(servlet("指定文件列表生成zip", GenerateZip.class).addMapping("/zip"));
 
             DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
 
@@ -72,33 +77,16 @@ public class LunchServer {
 
             HttpHandler httpHandler = manager.start();
 
-            PathHandler pathHandler = Handlers.path();
+            //默认处理程序 - 文件资源管理器
+            PathHandler pathHandler =
+                    Handlers.path(httpHandler);
 
-            pathHandler.addPrefixPath(
-                           WebProperties.get().pathPrefix,//web访问路径前缀
-                    httpHandler
-                    );
+            Undertow.builder()
+                    .addHttpListener(WebProperties.get().webPort, WebProperties.get().webIp, pathHandler)
+                    .build()
+                    .start();
 
-            PathResourceManager pathResourceManager =  new PathResourceManager(
-                    Paths.get(WebProperties.get().rootPath),
-                    4096L,
-                    false,
-                    false,
-                    false
-            );
-            pathHandler.addPrefixPath(
-                    "/",   //下载地址- 请勿修改
-                    io.undertow.Handlers.resource(pathResourceManager)
-            );
-            Undertow server = Undertow
-                    .builder()
-                    .addHttpListener(
-                            WebProperties.get().webPort,
-                            WebProperties.get().webIp)
-                    .setHandler(pathHandler)
-                    .build();
-            server.start(); //开始运行
-            Log.i("已启动http服务");
+            Log.i("已启动HTTP服务");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -170,15 +158,20 @@ public class LunchServer {
 
     private static void startFileBackupServer() {
         try {
-            BackupProperties.get().ftcBackupServer = new FtcBackupServer(WebProperties.get().rootPath,new InetSocketAddress(WebProperties.get().webIp, BackupProperties.get().localPort));
+            BackupProperties.get().ftcBackupServer = new FtcBackupServer(WebProperties.get().rootPath,WebProperties.get().webIp, BackupProperties.get().localPort,64,5000);
 
+            BackupProperties.get().ftcBackupServer.setCallback(file -> {
+                BackupProperties.get().ftcBackupServer.getClient().addBackupFile(file);
+            });
+
+            FtcBackupClient client = BackupProperties.get().ftcBackupServer.getClient();
+            client.addFilterSuffix(".tmp");
+            client.addServerAddress(BackupProperties.get().remoteList);
             if (BackupProperties.get().isBoot){
-                    for (InetSocketAddress remoteAddress : BackupProperties.get().remoteList){
-                        if (NetworkUtil.ping(remoteAddress.getAddress().getHostAddress())){
-                            BackupProperties.get().ftcBackupServer.getClient().ergodicDirectory(remoteAddress,".tmp");
-                        }
-                    }
+                client.ergodicDirectory();
             }
+            client.setTime(BackupProperties.get().time);
+//            client.watchDirectory(true);
             Log.i("已启动BACKUP服务");
         } catch (IOException e) {
             e.printStackTrace();
