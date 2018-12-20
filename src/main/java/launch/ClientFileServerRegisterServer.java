@@ -7,7 +7,6 @@ import leeping.IceServerAbs;
 public class ClientFileServerRegisterServer extends IceServerAbs<IFileServerCenterPrx> {
     public void test() throws Exception{
         FSAddressInfo info = getProxy().queryFileServerAddress();
-        System.out.println("info - "+ info.isValid +" "+ info.uploadHttpUrl+" "+info.downloadHttpUrlPrefix);
-
+        System.out.println("info - "+ info.isValid +" "+ info.httpUrlPrev);
     }
 }
