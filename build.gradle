@@ -38,21 +38,21 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-//    shadowJar {
-//        baseName = 'file-server'
-//        classifier = null
-//        version = 1.0
-//        manifest {
-//            attributes 'Main-Class': 'server.LunchServer'
-//        }
-//        dependencies {
-////                exclude(dependency(files('libs/*.jar')))
-////            include(dependency(fileTree(dir: 'libs', exclude: ['assembly*.jar', 'comm*.jar'], include: ['ice*.jar'])))
-////            include(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8"))
-////            include(dependency('com.google.code.gson:gson:2.8.5'))
-////            include(dependency('io.undertow:undertow-core:2.0.1.Final'))
-////            include(dependency('io.undertow:undertow-servlet:2.0.1.Final'))
-////            include(dependency('io.undertow:undertow-websockets-jsr:2.0.1.Final'))
-////            include(dependency('org.apache.ftpserver:ftpserver:1.1.1'))
-//        }
-//    }
+    shadowJar {
+        baseName = 'file-server'
+        classifier = null
+        version = 1.0
+        manifest {
+            attributes 'Main-Class': 'server.LunchServer'
+        }
+        dependencies {
+//                exclude(dependency(files('libs/*.jar')))
+//            include(dependency(fileTree(dir: 'libs', exclude: ['assembly*.jar', 'comm*.jar'], include: ['ice*.jar'])))
+//            include(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8"))
+//            include(dependency('com.google.code.gson:gson:2.8.5'))
+//            include(dependency('io.undertow:undertow-core:2.0.1.Final'))
+//            include(dependency('io.undertow:undertow-servlet:2.0.1.Final'))
+//            include(dependency('io.undertow:undertow-websockets-jsr:2.0.1.Final'))
+//            include(dependency('org.apache.ftpserver:ftpserver:1.1.1'))
+        }
+    }
