@@ -53,7 +53,7 @@ public class LunchServer {
         //开启文件备份服务
         startFileBackupServer();
         //开启FTP服务器
-//        startFTPServer();
+        startFTPServer();
         //开启web文件服务器
         startWebServer();
     }
