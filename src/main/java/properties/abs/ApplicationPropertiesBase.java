@@ -1,10 +1,13 @@
 package properties.abs;
 
+import bottle.ftc.tools.Log;
 import properties.annotations.PropertiesFilePath;
 import properties.annotations.PropertiesName;
 import properties.infs.FieldConvert;
 import properties.infs.baseImp.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -33,7 +36,15 @@ public abstract class ApplicationPropertiesBase {
     public ApplicationPropertiesBase() {
         try {
             String filePath = getPropertiesFilePath();
-            InputStream in = this.getClass().getResourceAsStream( filePath );
+            //优先从外部配置文件获取
+            InputStream in ;
+            File file = new File("./resources"+filePath);
+            if (file.exists()){
+                in = new FileInputStream(file);
+            }else{
+                in = this.getClass().getResourceAsStream( filePath );
+            }
+
             properties.clear();
             properties.load(in);
             in.close();

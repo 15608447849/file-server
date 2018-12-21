@@ -61,8 +61,8 @@ public class FileUploadOperation {
             specifyPath = getIndexValue(specifyPaths,i,"/defaults/"+areaName+"/");
             specifyFileName = getIndexValue(specifyNames,i,areaFileName);
             saveMD5Name = getIndexValue(specifyMd5,i,"false");
-            Log.i("表单域名 :"+areaName+" ; 表单名 :"+areaFileName+" ; 上传的文件: " + specifyPath+specifyFileName);
             saveFile(fileItem,specifyPath,specifyFileName,saveMD5Name,uploadResult);
+            Log.i("表单域名 :"+areaName+" ; 表单名 :"+areaFileName+" ; 上传的文件: " + specifyPath+specifyFileName);
             resultList.add(uploadResult);//添加结果集合
         }
         return resultList;

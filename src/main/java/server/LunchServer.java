@@ -53,7 +53,7 @@ public class LunchServer {
         //开启文件备份服务
         startFileBackupServer();
         //开启FTP服务器
-        startFTPServer();
+//        startFTPServer();
         //开启web文件服务器
         startWebServer();
     }
@@ -162,18 +162,17 @@ public class LunchServer {
         try {
             BackupProperties.get().ftcBackupServer = new FtcBackupServer(WebProperties.get().rootPath,WebProperties.get().webIp, BackupProperties.get().localPort,64,5000);
 
-            BackupProperties.get().ftcBackupServer.setCallback(file -> {
-                BackupProperties.get().ftcBackupServer.getClient().addBackupFile(file);
-            });
-
             FtcBackupClient client = BackupProperties.get().ftcBackupServer.getClient();
+
+            BackupProperties.get().ftcBackupServer.setCallback(client::addBackupFile);
+
             client.addFilterSuffix(".tmp");
             client.addServerAddress(BackupProperties.get().remoteList);
             if (BackupProperties.get().isBoot){
                 client.ergodicDirectory();
             }
             client.setTime(BackupProperties.get().time);
-//            client.watchDirectory(true);
+            client.watchDirectory(true);
             Log.i("已启动BACKUP服务");
         } catch (IOException e) {
             e.printStackTrace();
