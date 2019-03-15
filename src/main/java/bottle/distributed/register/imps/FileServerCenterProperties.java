@@ -24,7 +24,6 @@ public class FileServerCenterProperties extends ApplicationPropertiesBase {
 
     @Override
     protected void initialization() {
-        System.out.println(listStr);
         String[] infos = listStr.split(";");
         for (String info : infos){
             String[] temp = info.split("#");
@@ -32,8 +31,9 @@ public class FileServerCenterProperties extends ApplicationPropertiesBase {
             config.address = temp[0];
             config.priority = Integer.parseInt(temp[1]);
             serverList.add(config);
-        };
+        }
         sortAddress();
+        System.out.println("\n\n已注册的文件服务器地址:" + listStr+"\n\n");
     }
 
 }

@@ -68,12 +68,14 @@ public class HttpUtil {
 
     //表单项
     public static final class FormItem{
-        boolean isFile = true;
+        boolean isFile = false;
+        boolean isStream = false;
         String field;
         String file;
         String key;
         String value;
         File fileItem;
+        InputStream inputStream;
 
         public FormItem(String field, String file, File fileItem) {
             this.field = field;
@@ -81,11 +83,17 @@ public class HttpUtil {
             this.fileItem = fileItem;
             isFile = true;
         }
+        public FormItem(String field, String file, InputStream inputStream) {
+            this.field = field;
+            this.file = file;
+            this.inputStream = inputStream;
+            isFile = true;
+            isStream = true;
+        }
 
         public FormItem(String key, String value) {
             this.key = key;
             this.value = value;
-            isFile = false;
         }
     }
 
@@ -400,15 +408,21 @@ public class HttpUtil {
                     writeBytesByForm(out, HttpFrom.textExplain(item.key,item.value)); //表单说明信息
                 }else{
                     //文件类型
-                    if (!item.fileItem.exists()){
+                    if (!item.isStream && !item.fileItem.exists()){
                         throw new FileNotFoundException(item.fileItem.getAbsolutePath());
                     }
                     writeBytesByForm(out, HttpFrom.PREV); //前缀
                     writeBytesByForm(out, HttpFrom.fileExplain(item.field,item.file)); //表单说明信息
                     writeBytesByForm(out, HttpFrom.SUX); //后缀
-                    writeFileStreamToOut(out,item.fileItem,request,callback);
+
+                    if (item.isStream){
+                        writeInputStreamToOut(out,item.inputStream,request,callback);//接入流
+                    }else{
+                        writeFileStreamToOut(out,item.fileItem,request,callback);//接入文件流
+                    }
                 }
         }
+
         //添加表单后缀
         writeBytesByForm(out, HttpFrom.LINEND);
         writeBytesByForm(out, HttpFrom.END);
@@ -418,10 +432,9 @@ public class HttpUtil {
     private static void writeBytesByForm(OutputStream out, String s) throws IOException {
         out.write(s.getBytes());
     }
-    /**文件流上传*/
-    private static void updateFileByStream(OutputStream out, Request request, Callback callback) {
-//        pass
-    }
+
+
+
     /** 写入文件流到服务器*/
     private static void writeFileStreamToOut(OutputStream out, File fileItem,Request request,Callback callback) throws Exception{
             //文件流
@@ -443,6 +456,21 @@ public class HttpUtil {
             }finally {
                 closeIo(fis);
             }
+    }
+    /** 写流上传 */
+    private static void writeInputStreamToOut(OutputStream out,InputStream inputStream, Request request, Callback callback){
+        try {
+            //缓存数据字节
+            byte[] cache = new byte[request.getLocCacheByteMax()];
+            int len;
+            while ((len = inputStream.read(cache)) != -1) {
+                out.write(cache, 0, len);
+            }
+        } catch (IOException e) {
+            callback.onError(e);
+        }finally {
+            closeIo(inputStream);
+        }
 
     }
 

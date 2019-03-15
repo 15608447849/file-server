@@ -6,17 +6,40 @@ import Ice.Object;
 import Ice.ObjectAdapter;
 import bottle.distributed.register.imps.FileServerCenterImps;
 
+import leeping.HttpResult;
 import leeping.IceIo;
+import server.servlet.beans.ExcelReaderOperation;
 
 
-import java.nio.file.Paths;
+import java.io.*;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
-//    public static void main(String[] args) {
+    /*
+    public static void main(String[] args) {
 //        startServer(args);
 //        startServerByGrid(args);
 
-//    }
+//        testFileUpload();
+        testExcel();
+    }*/
+
+    private static void testFileUpload() {
+        try {
+            File f = new File("D:\\ftcServer\\c\\33.jpg");
+            FileInputStream fileInputStream = new FileInputStream(f);
+            String  test =
+                    new HttpResult()
+                            .addStream(fileInputStream,null,"A.jpg")
+                            .fileUpload("http://192.168.1.144:8888/upload")
+                            .getRespondContent();
+            System.out.println(test);
+            while (true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static void startServerByGrid(String[] args) {
         try {
@@ -46,4 +69,26 @@ public class Main {
         }
         System.exit(status);
     }
+
+    private static void testExcel(){
+        try {
+            String filepath = "C:\\Users\\user\\Desktop\\test\\p.xlsx";
+            List<Map<String,String>> list = new ExcelReaderOperation(filepath).start();
+
+            //遍历解析出来的list
+            for (Map<String,String> map : list) {
+                for (Map.Entry<String,String> entry : map.entrySet()) {
+                    System.out.print(entry.getKey()+":"+entry.getValue() +" ");
+                }
+                System.out.println();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }

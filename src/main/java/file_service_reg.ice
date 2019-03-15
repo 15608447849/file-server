@@ -4,6 +4,8 @@
 */
 module reg{
 
+
+
     /** 文件服务器地址信息 */
     struct FSAddressInfo
     {

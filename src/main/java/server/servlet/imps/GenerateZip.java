@@ -68,6 +68,7 @@ public class GenerateZip extends Mservlet {
      * @return 存放了需要打包文件的临时目录全路径
      */
     private File cpFileListToDir(List<String> paths) throws  Exception{
+
             String homePath = WebProperties.get().rootPath;
 
             String dirPath = homePath + FileUtil.SEPARATOR + MD5Util.byteToHexString( (ZIP_TEMP_DIR_PREV +System.currentTimeMillis()).getBytes());

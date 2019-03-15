@@ -24,13 +24,11 @@ import org.apache.ftpserver.listener.nio.NioListener;
 import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import properties.abs.ApplicationPropertiesBase;
 import server.entity.BackupProperties;
 import server.entity.FtpInfo;
 import server.entity.WebProperties;
-import server.servlet.imps.FileUpLoad;
-import server.servlet.imps.FileUpLoadAlsoBackup;
-import server.servlet.imps.GenerateZip;
-import server.servlet.imps.Online;
+import server.servlet.imps.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +37,7 @@ import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import static io.undertow.Handlers.resource;
 import static io.undertow.servlet.Servlets.servlet;
 
 
@@ -48,14 +47,25 @@ import static io.undertow.servlet.Servlets.servlet;
  */
 public class LunchServer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+      int level = 2;
 
-        //开启文件备份服务
-        startFileBackupServer();
-        //开启FTP服务器
-//        startFTPServer();
-        //开启web文件服务器
-        startWebServer();
+      if (args.length > 1){
+          level = Integer.parseInt(args[0]);
+      }
+      Log.i("服务启动等级: "+ level);
+      if (level>=1){
+          //开启web文件服务器
+          startWebServer();
+      }
+      if (level>=2){
+          //开启文件备份服务
+          startFileBackupServer();
+      }
+      if (level>=3){
+          //开启FTP服务器
+          startFTPServer();
+      }
     }
 
     private static void startWebServer() {
@@ -72,6 +82,8 @@ public class LunchServer {
             servletBuilder.addServlet(servlet("文件上传并同步", FileUpLoadAlsoBackup.class).addMapping("/upload"));
             servletBuilder.addServlet(servlet("服务器在线监测", Online.class).addMapping("/online"));
             servletBuilder.addServlet(servlet("指定文件列表生成zip", GenerateZip.class).addMapping("/zip"));
+            servletBuilder.addServlet(servlet("读取excel", Excel.class).addMapping("/excel"));
+            servletBuilder.addServlet(servlet("遍历文件列表", FileErgodic.class).addMapping("/ergodic"));
 
             DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
 
@@ -79,7 +91,7 @@ public class LunchServer {
 
             HttpHandler httpHandler = manager.start();
 
-            //默认处理程序 - 文件资源管理器
+            //路径默认处理程序
             PathHandler pathHandler =
                     Handlers.path(httpHandler);
 
@@ -88,7 +100,7 @@ public class LunchServer {
                     .build()
                     .start();
 
-            Log.i("已启动HTTP服务");
+//            Log.i("已启动HTTP服务");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,7 +110,7 @@ public class LunchServer {
             FtpServer server;
             try {
                 //配置文件存在
-                FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(String.valueOf(LunchServer.class.getResource("/ftpconfig.xml")));
+                FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(ApplicationPropertiesBase.getPropertiesPath("ftpconfig.xml"));
                 if(ctx.containsBean("server")) {
                     server = (FtpServer)ctx.getBean("server");
                 } else {
@@ -141,7 +153,7 @@ public class LunchServer {
                     }
                 }
                 FtpInfo.get().setInfo(host,port,user,pass);
-                Log.i("已启动FTP服务");
+//                Log.i("已启动FTP服务");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,7 +185,7 @@ public class LunchServer {
             }
             client.setTime(BackupProperties.get().time);
             client.watchDirectory(true);
-            Log.i("已启动BACKUP服务");
+//            Log.i("已启动BACKUP服务");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -11,4 +11,5 @@ public class UploadResult extends Result {
     public String suffix; //文件后缀
     public String currentFileName;//现在的文件名
     public String md5FileRelativePath;//MD5文件相对路径
+    public long fileSize = 0L;
 }

@@ -43,8 +43,7 @@ public class FileUpLoad extends Mservlet {
             String path;
             for(int i=0;i<pathList.size();i++){
                 path = pathList.get(i);
-                if (!path.startsWith(FileUtil.SEPARATOR)) path = FileUtil.SEPARATOR+ path;//保证前面有 '/'
-                if (!path.endsWith(FileUtil.SEPARATOR)) path+= FileUtil.SEPARATOR; //后面保证 '/'
+                path = checkDirPath(path);
                 pathList.set(i,path);
             }
         }
@@ -53,8 +52,8 @@ public class FileUpLoad extends Mservlet {
 
         //判断是否保存成md5文件名
         ArrayList<String> fileSaveMD5 = filterData(req.getHeader("save-md5"));
-
         try {
+
             if (!ServletFileUpload.isMultipartContent(req)){
                 throw new IllegalArgumentException("content-type is not 'multipart/form-data'");
             }

@@ -5,10 +5,9 @@ import properties.annotations.PropertiesFilePath;
 import properties.annotations.PropertiesName;
 import properties.infs.FieldConvert;
 import properties.infs.baseImp.*;
+import server.LunchServer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Properties;
@@ -36,15 +35,7 @@ public abstract class ApplicationPropertiesBase {
     public ApplicationPropertiesBase() {
         try {
             String filePath = getPropertiesFilePath();
-            //优先从外部配置文件获取
-            InputStream in ;
-            File file = new File("./resources"+filePath);
-            if (file.exists()){
-                in = new FileInputStream(file);
-            }else{
-                in = this.getClass().getResourceAsStream( filePath );
-            }
-
+            InputStream in = readPathProperties(filePath);
             properties.clear();
             properties.load(in);
             in.close();
@@ -55,6 +46,34 @@ public abstract class ApplicationPropertiesBase {
         }
     }
 
+    private InputStream readPathProperties(String filePath) throws FileNotFoundException {
+        //优先从外部配置文件获取
+        String dirPath = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        File file = new File(dirPath+"/resources"+filePath);
+        try {
+            Log.i("配置文件: "+ file.getCanonicalPath() +" 是否存在: "+file.exists());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (file.exists()){
+            return new FileInputStream(file);
+        }else{
+            return getClass().getResourceAsStream( filePath );
+        }
+    }
+
+    public static String getPropertiesPath(String fileName) {
+        File f = new File("./resources/"+fileName);
+        if (f.exists()) {
+            try {
+                return f.getCanonicalPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return ApplicationPropertiesBase.class.getResource("/"+fileName).toString();
+    }
 
 
     private String getPropertiesFilePath() {

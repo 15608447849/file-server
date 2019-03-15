@@ -119,6 +119,7 @@ public class FileUploadOperation {
             uploadResult.currentFileName = specifyFileName;
             uploadResult.suffix = suffix;
             uploadResult.md5FileRelativePath = md5FileRelativePath;
+            uploadResult.fileSize = file.length();
             uploadResult.info(SUCCESS);
 
         } catch (Exception e) {

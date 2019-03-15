@@ -40,6 +40,7 @@ public class BackupProperties extends ApplicationPropertiesBase {
         remoteList = new InetSocketAddress[arr.length];
         for (int i = 0; i < arr.length ;i++){
             String[] address = arr[i].split(":");
+            if (address[0].equals("0.0.0.0")) continue;
             remoteList[i] = new InetSocketAddress(address[0],Integer.parseInt(address[1]));
         }
     }

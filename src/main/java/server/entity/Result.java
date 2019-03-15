@@ -32,4 +32,5 @@ public class Result<T extends Result> {
     public Result info(int code){
         return info(code,errorMap.get(code));
     }
+
 }
