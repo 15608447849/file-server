@@ -28,7 +28,7 @@ public class FileBackupOperation {
         FtcBackupClient client =  BackupProperties.get().ftcBackupServer.getClient();
         for (String path : filePaths){
             File file = new File(path);
-            Log.i("同步文件 : "+file);
+//            Log.i("同步文件 : "+file);
             client.addBackupFile(file);
         }
     }
